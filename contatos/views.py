@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from . models import Contato
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.db.models import Q, Value
 from django.db.models.functions import Concat
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
@@ -15,18 +16,24 @@ def index(request):
     return render(request, 'contatos/index.html', {'contatos' : contatos}) #passa como json
 
 def detalhes(request, contato_id):
-    contato = Contato.objects.get(id = contato_id)
-    #contato = get_object_or_404(Contato, id=contato_id)
-    if not contato or not contato.mostrar:
-        raise Http404()
-    return render(request, 'contatos/detalhes.html', {'contato' : contato}) #passa como json
+    try:
+        contato = Contato.objects.get(id = contato_id)
+        if not contato.mostrar:
+            raise Exception('Usuário não pode ser acessado...')
+        return render(request, 'contatos/detalhes.html', {'contato' : contato}) #passa como json
+
+    except:
+        messages.add_message(request, messages.constants.ERROR, 'Esse contato não existe ou não pode ser acessado...')
+        return redirect('index')
+
+    
 
 def busca(request):
     termo = request.GET.get('termo')
 
     if not termo:
-        termo= ''
-
+        messages.add_message(request, messages.constants.ERROR, 'Nenhum valor informado para a busca')
+        return redirect('index')
     filtercampos = Concat('nome', Value(' '), 'sobrenome')
     contatos = Contato.objects.order_by('-id').annotate(
         nomesobre = filtercampos
