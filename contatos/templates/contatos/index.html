@@ -1,7 +1,18 @@
 {% extends 'base.html'%}    
 
 {%block conteudo%}
-
+  <br><br>
+  <form method="get" action="{% url 'busca' %}">
+    <div class="form-group row">
+      <div class="col-12">
+        <input class="form-control"
+              type="search" value="{{ request.GET.termo }}"
+              id="search-input"
+              placeholder="Digite sua pesquisa"
+              name="termo">
+      </div>
+    </div>
+  </form>
     <h1 class="mt-5">Minha agenda</h1>
         <table class="table">
           <thead>
@@ -32,12 +43,12 @@
         <nav aria-label="Navegar entre as páginas de contatos">
           <ul class="pagination">
             {% for pagina in contatos.paginator.page_range %}
-            <li class="page-item {%if contatos.number == pagina %} active {% endif %}}}">
-              <a class="page-link" href="?page={{pagina}}">{{pagina}}</a>
+            <li class="page-item {%if contatos.number == pagina %} active {% endif %}">
+              <a class="page-link" href="?page={{pagina}}{%if request.GET.termo %}&termo={{request.GET.termo}}{% endif %}">{{pagina}}</a>
             </li>
             {% endfor %}
             {% if contatos.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{contatos.next_page_number}}">Próxima Página</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{contatos.next_page_number}}{%if request.GET.termo %}&termo={{request.GET.termo}}{% endif %}">Próxima Página</a></li>
             {%endif%}
             
           </ul>

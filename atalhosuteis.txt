@@ -173,9 +173,3 @@ def detalhes(request, contato_id):
     contato = Contato.objects.get(id = contato_id)
     return render(request, 'contatos/detalhes.html', {'contato' : contato}) #passa como json
 
-
-
-
-{% if contatos.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{contatos.next}}">Próxima Página</a></li>
-            {%endif%}
