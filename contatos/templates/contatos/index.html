@@ -6,6 +6,7 @@
         <table class="table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nome</th>
               <th>Sobrenome</th>
               <th>Telefone</th>
@@ -14,17 +15,31 @@
           </thead>
           <tbody>
               {% for contato in contatos %}
-
-              <tr>
-                <td>
-                  <a href="{% url 'detalhes' contato.id %}">{{contato.nome}}</a>
-                </td>
-                <td>{{contato.sobrenome}}</td>
-                <td>{{contato.telefone}}</td>
-                <td>{{contato.categoria}}</td>
-              </tr>
+                {%if contato.mostrar%}
+                  <tr>
+                    <td>{{contato.id}}</td>
+                    <td>
+                      <a href="{% url 'detalhes' contato.id %}">{{contato.nome}}</a>
+                    </td>
+                    <td>{{contato.sobrenome}}</td>
+                    <td>{{contato.telefone}}</td>
+                    <td>{{contato.categoria}}</td>
+                  </tr>
+                {%endif%}
               {% endfor %}
           </tbody>
         </table>
-
+        <nav aria-label="Navegar entre as páginas de contatos">
+          <ul class="pagination">
+            {% for pagina in contatos.paginator.page_range %}
+            <li class="page-item {%if contatos.number == pagina %} active {% endif %}}}">
+              <a class="page-link" href="?page={{pagina}}">{{pagina}}</a>
+            </li>
+            {% endfor %}
+            {% if contatos.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{contatos.next_page_number}}">Próxima Página</a></li>
+            {%endif%}
+            
+          </ul>
+        </nav>
 {%endblock%}
