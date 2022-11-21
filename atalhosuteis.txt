@@ -173,3 +173,19 @@ def detalhes(request, contato_id):
     contato = Contato.objects.get(id = contato_id)
     return render(request, 'contatos/detalhes.html', {'contato' : contato}) #passa como json
 
+
+para fazer upload de arquivos
+-----------
+nomedoprojeto/settings.py 
+
+#determina a pasta que vai receber esses arquivos
+MEDIA_ROOT = BASE_DIR / 'upload'
+MEDIA_URL = 'media/'
+
+nomedoprojeto/urls.py
+
+#associa o caminho definido no settings para arquivos estaticos de upload
+#presta atençao que tem um sinal de + no final do patterns
+urlpatterns = [
+    ...,    
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
